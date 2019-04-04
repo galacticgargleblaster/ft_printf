@@ -1,0 +1,6 @@
+[submodule "lib/liblist"]
+	path = lib/liblist
+	url = https://www.github.com/galacticgargleblaster/liblist
+[submodule "lib/libft"]
+	path = lib/libft
+	url = https://github.com/galacticgargleblaster/libft/
