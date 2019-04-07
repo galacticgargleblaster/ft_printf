@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 01:14:19 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 02:50:02 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,44 +142,36 @@ t_token		*get_next_unexpanded_conversion(t_element_container *container)
 	return (NULL);
 }
 
-/*
-**	If a token has a conversion that needs to be done, do it
-*/
-
-void		expand_conversion(t_token *token, va_list *ap)
-{
-	unsigned long long foo;
-	foo = va_arg(*ap, unsigned long long);
-	token->str = ft_itoa(foo);
-	free(token->conv);
-	token->conv = NULL;
-}
-
-
-int	ft_snprintf(char *str, size_t size, const char *format, ...)
+int	expand_va_args(const char *format, va_list ap)
 {
 	t_doubly_linked_list	*token_list;
 	t_element_container		*container;
 	t_token					*token;
-	va_list		ap;
+	int foo;
 
 	token_list = tokenize(format);
 	container = token_list->head;
-	va_start(ap, format);
 	while ((token = get_next_unexpanded_conversion(container)))
-		expand_conversion(token, &ap);
-	va_end(ap);
-	(void)str;
-	(void)size;
+	{
+		foo = va_arg(ap, int);
+		token->str = ft_itoa(foo);
+		free(token->conv);
+		token->conv = NULL;
+	}
 	return (0);
 }
 
+// int	ft_snprintf(char *str, size_t size, const char *format, ...)
+// {
+// }
+
 int	ft_printf(const char *format, ...)
 {
-	char	*printme;
+	va_list		ap;
 
-	printme = ft_strnew(ft_strlen(format));
-	ft_snprintf(printme, ft_strlen(format), format);
+	va_start(ap, format);
+	expand_va_args(format, ap);
+	va_end(ap);
 	return (0);
 }
 

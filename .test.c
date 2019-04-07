@@ -2,5 +2,6 @@
 
 int main()
 {
-	ft_printf("foo %d, %d, %ull\n", 50, 2, 10);
+	int foo = 50;
+	ft_printf("foo %d, %d, %d\n", foo, 200, -10);
 }
