@@ -6,7 +6,7 @@
 #    By: student <student@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/01 10:18:11 by nkirkby           #+#    #+#              #
-#    Updated: 2019/04/04 20:09:36 by student          ###   ########.fr        #
+#    Updated: 2019/04/06 21:18:37 by student          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,10 +16,13 @@ SOURCE_DIR = .
 SOURCES = $(wildcard $(SOURCE_DIR)/*.c)
 SOURCE_BASENAMES = $(notdir $(SOURCES))
 
-INCLUDES = ft_printf.h
+LIBFT_DIR = ./lib/libft
+LIBLIST_DIR = ./lib/liblist
+INCLUDES = .
 CC = clang
 CPP = clang -E
 CFLAGS = -Wall -Werror -Wextra -I$(INCLUDES)
+LINKER_FLAGS = -lft -L$(LIBFT_DIR) -llist -L$(LIBLIST_DIR)
 
 # ------------------------------------------------------------------------------#
 # This method of directory creation is adapted from:
@@ -32,7 +35,6 @@ OBJECT_DIR := .o
 OBJECTS := $(patsubst %,$(OBJECT_DIR)/%.o,$(basename $(SOURCE_BASENAMES)))
 # ------------------------------------------------------------------------------#
 
-
 .SUFFIXES: # remove the default suffix rules, because the GNU Make manual states:
 # Suffix rules are the old-fashioned way of defining implicit rules for make.
 # Suffix rules are obsolete because pattern rules are more general and clearer.
@@ -40,23 +42,29 @@ OBJECTS := $(patsubst %,$(OBJECT_DIR)/%.o,$(basename $(SOURCE_BASENAMES)))
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	ar -r $@ $^
+	ar -r $@ $^ $(LIBFT_DIR)/.o/*.o $(LIBLIST_DIR)/.o/*.o
 
 # https://stackoverflow.com/questions/38110010/pattern-rule-with-files-in-different-directories
 $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c $(INCLUDES)
+	make -C $(LIBFT_DIR)
+	make -C $(LIBLIST_DIR)
 	$(shell mkdir -p $(dir $(OBJECTS)) >/dev/null)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
-	/bin/rm -rf $(OBJECT_DIR)
+	make -C $(LIBFT_DIR) clean
+	make -C $(LIBLIST_DIR) clean
 
 fclean: clean
 	/bin/rm -f $(NAME)
+	/bin/rm -rf $(NAME).dSYM
+	make -C $(LIBFT_DIR) fclean
+	make -C $(LIBLIST_DIR) fclean
 
 re: clean all
 
-test:
-	./scripts/build_and_run_tests.py
+test: fclean
+	$(MAKE) CFLAGS+='-g' all
+	$(CC) $(CFLAGS) -g $(LINKER_FLAGS) -lftprintf -L. .test.c -o test
 	
-debug: CFLAGS += -g
-debug: fclean all
+# To make debug
