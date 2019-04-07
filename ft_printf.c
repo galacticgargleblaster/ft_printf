@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 02:50:02 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 12:37:49 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@
 
 typedef struct	s_conversion
 {
-	char	*spec;
+	char					*spec;
+	t_doubly_linked_list	*functions;
 }				t_conversion;
 
 typedef struct	s_flag
@@ -43,9 +44,9 @@ typedef struct	s_flag
 #define IS_CONVERSION_CHR(c) (ft_strchr(ALL_CONVERSION_CHRS, c) != NULL)
 #define IS_MODIFIER_CHR(c) (ft_strchr(ALL_MODIFIER_CHRS, c) != NULL)
 
-
 /*
-**	A token may be either a string literal, or a conversion specification.
+**	A token may be either a string literal or a conversion specification, 
+**	but not both.
 */
 
 typedef struct	s_token
@@ -65,19 +66,87 @@ t_token		*new_token(void)
 	return (token);
 }
 
+void	*func_for_flag(char	flag)
+{
+	(void)flag;
+	return (NULL);
+}
+void	*func_for_conv(char	flag)
+{
+	(void)flag;
+	return (NULL);
+}
+
+/*
+**	Given a spec, return a list of functions, that when applied in the order
+**	they appear in the list, return a string in the specified format
+*/
+
+t_doubly_linked_list	*assemble_conversion_functions_for(char *spec)
+{
+	t_doubly_linked_list	*funcs;
+
+	funcs = new_doubly_linked_list();
+	while (IS_FLAG_CHR(*spec))
+	{
+		list_push_head(funcs, func_for_flag(*spec));
+		spec++;
+	}
+	while (IS_CONVERSION_CHR(*spec))
+	{
+		list_push_head(funcs, func_for_conv(*spec));
+		spec++;
+	}
+	while (IS_MODIFIER_CHR(*spec))
+		spec++;
+	return (funcs);
+}
+
 t_conversion	*new_conversion(char *spec)
 {
 	t_conversion	*conv;
 
 	conv = malloc(sizeof(t_conversion));
 	conv->spec = spec;
+	conv->functions = assemble_conversion_functions_for(spec);
 	return (conv);
+}
+
+/*
+**	Given a spec (a string beginning with single '%'),
+**	return the length in characters of the entire conversion spec
+*/
+
+size_t	conversion_spec_length(const char	*str)
+{
+	size_t	len;
+
+	len = 1;
+	while (IS_FLAG_CHR(str[len]))
+		len++;
+	while (IS_CONVERSION_CHR(str[len]))
+		len++;
+	while (IS_MODIFIER_CHR(str[len]))
+		len++;
+	return (len);
+}
+
+size_t	length_of_str_to_next_spec_char_or_null(const char *str)
+{
+	size_t	len;
+	char	*tmp;
+
+	tmp = ft_strchr(str, SPEC_CHAR);
+	if (tmp == NULL)
+		len = ft_strlen(str);
+	else
+		len = tmp - str;
+	return (len);
 }
 
 
 /*
-**	iterates over the format string, returning a t_token instance for every
-**	section of the string starting with '%'
+**	iterates over the format string and returns a list of tokens
 **
 **	Find any '%' that isn't followed by another '%', and read until the
 **	entire format spec is consumed.  This means eating flags,
@@ -88,39 +157,27 @@ t_doubly_linked_list	*tokenize(const char *format)
 {
 	t_doubly_linked_list	*token_list;
 	t_token		*token;
-	char		*tmp;
 	size_t		len;
 
 	token_list = new_doubly_linked_list();
 	while (*format)
 	{
-		if (*format == SPEC_CHAR)
-		{
-			if (*(format + 1) == SPEC_CHAR)
-				format++;
-			else
-			{
-				token = new_token();
-				len = 1;
-				while (IS_FLAG_CHR(format[len]))
-					len++;
-				while (IS_CONVERSION_CHR(format[len]))
-					len++;
-				while (IS_MODIFIER_CHR(format[len]))
-					len++;
-				token->conv = new_conversion(ft_strndup(format, len));
-				list_push_tail(token_list, token);
-				format += len;
-				continue;
-			}
-		}
 		token = new_token();
-		tmp = ft_strchr(format, SPEC_CHAR);
-		if (tmp == NULL)
-			len = ft_strlen(format);
+		if (*format == SPEC_CHAR && *(format + 1) != SPEC_CHAR)
+		{
+			len = conversion_spec_length(format);
+			token->conv = new_conversion(ft_strndup(format, len));
+		}
+		else if (*format == SPEC_CHAR && *(format + 1) != SPEC_CHAR)
+		{
+			format++;
+			len = length_of_str_to_next_spec_char_or_null(format);
+			token->str = ft_strndup(format, len); }
 		else
-			len = tmp - format;
-		token->str = ft_strndup(format, len);
+		{
+			len = length_of_str_to_next_spec_char_or_null(format);
+			token->str = ft_strndup(format, len);
+		}
 		list_push_tail(token_list, token);
 		format += len;
 	}
@@ -161,10 +218,6 @@ int	expand_va_args(const char *format, va_list ap)
 	return (0);
 }
 
-// int	ft_snprintf(char *str, size_t size, const char *format, ...)
-// {
-// }
-
 int	ft_printf(const char *format, ...)
 {
 	va_list		ap;
@@ -174,20 +227,3 @@ int	ft_printf(const char *format, ...)
 	va_end(ap);
 	return (0);
 }
-
-/*
-		c = va_arg(ap, int);
-		printf("char %c\n", c);
-		break;
-	case 's':                   
-		s = va_arg(ap, char *);
-		printf("string %s\n", s);
-		break;
-	case 'p':
-		p = va_arg(ap, void *);
-		printf("pointer %p\n", p);
-	case 'd':                  
-		d = va_arg(ap, int);
-		printf("int %d\n", d);
-		break;
-*/
