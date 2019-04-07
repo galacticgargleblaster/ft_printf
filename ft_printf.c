@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/06 19:49:45 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 00:11:31 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,13 @@
 
 typedef struct	s_conversion
 {
-	char	*identifier;
+	char	*spec;
 }				t_conversion;
 
 typedef struct	s_flag
 {
 	char	*identifier;
 }				t_flag;
-
 
 #define ALL_CONVERSION_CHRS "cspdiouxX"
 #define ALL_FLAG_CHRS "#0-+ "
@@ -44,49 +43,89 @@ typedef struct	s_flag
 #define IS_CONVERSION_CHR(c) (ft_strchr(ALL_CONVERSION_CHRS, c) != NULL)
 #define IS_MODIFIER_CHR(c) (ft_strchr(ALL_MODIFIER_CHRS, c) != NULL)
 
+
+/*
+**	A token may be either a string literal, or a conversion specification.
+*/
+
 typedef struct	s_token
 {
-	char	*str;
+	char			*str;
+	t_conversion	*conv;
+
 }				t_token;
 
+t_token		*new_token(void)
+{
+	t_token	*token;
+
+	token = malloc(sizeof(t_token));
+	token->str = NULL;
+	token->conv = NULL;
+	return (token);
+}
+
+t_conversion	*new_conversion(char *spec)
+{
+	t_conversion	*conv;
+
+	conv = malloc(sizeof(t_conversion));
+	conv->spec = spec;
+	return (conv);
+}
 
 /*
 **	iterates over the format string, returning a t_token instance for every
 **	section of the string starting with '%'
+**	
+**	Find any '%' that isn't followed by another '%', and read until the
+**	entire format spec is consumed.  This means eating flags, conversion chars, 
 */
-
-t_token		*get_next_token(char **fmt_str_ptr)
-{
-	t_token	*token;
-	size_t	token_size;
-	char	*next_spec_char;
-
-	token = malloc(sizeof(t_token));
-	if ((next_spec_char = ft_strchr(*fmt_str_ptr, SPEC_CHAR)))
-		token_size =  next_spec_char - *fmt_str_ptr;
-	else
-		token_size = ft_strlen(*fmt_str_ptr);
-	token->str = ft_strndup(*fmt_str_ptr, token_size);
-	*fmt_str_ptr += token_size;
-	return (token);
-}
 
 int	ft_snprintf(char *str, size_t size, const char *format, ...)
 {
 	va_list		args;
 	t_doubly_linked_list	*token_list;
 	t_token		*token;
-	char		*fmt;
+	char		*tmp;
+	size_t		len;
 
-	fmt = ft_strdup(format);
 	token_list = new_doubly_linked_list();
 	va_start(args, format);
 	while (*format)
-		token = get_next_token((char **)&format);
-		if (token)
-			list_push_tail(token_list, token);
+	{
+		if (*format == SPEC_CHAR)
+		{
+			if (*(format + 1) == SPEC_CHAR)
+				format++;
+			else
+			{
+				token = new_token();
+				len = 1;
+				while (IS_FLAG_CHR(format[len]))
+					len++;
+				while (IS_CONVERSION_CHR(format[len]))
+					len++;
+				while (IS_MODIFIER_CHR(format[len]))
+					len++;
+				token->conv = new_conversion(ft_strndup(format, len));
+				list_push_tail(token_list, token);
+				format += len;
+				continue;
+			}
+		}
+		token = new_token();
+		tmp = ft_strchr(format, SPEC_CHAR);
+		if (tmp == NULL)
+			len = ft_strlen(format);
+		else
+			len = tmp - format;
+		token->str = ft_strndup(format, len);
+		list_push_tail(token_list, token);
+		format += len;
 		(void)str;
 		(void)size;
+	}
 	va_end(args);
 	return (0);
 }

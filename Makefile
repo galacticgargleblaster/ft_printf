@@ -6,7 +6,7 @@
 #    By: student <student@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/01 10:18:11 by nkirkby           #+#    #+#              #
-#    Updated: 2019/04/06 21:18:37 by student          ###   ########.fr        #
+#    Updated: 2019/04/07 00:08:08 by student          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,19 +52,20 @@ $(OBJECT_DIR)/%.o: $(SOURCE_DIR)/%.c $(INCLUDES)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
-	make -C $(LIBFT_DIR) clean
-	make -C $(LIBLIST_DIR) clean
+	/bin/rm -rf $(OBJECT_DIR)
 
 fclean: clean
 	/bin/rm -f $(NAME)
 	/bin/rm -rf $(NAME).dSYM
+
+recursive_fclean: fclean
 	make -C $(LIBFT_DIR) fclean
 	make -C $(LIBLIST_DIR) fclean
 
 re: clean all
 
 test: fclean
-	$(MAKE) CFLAGS+='-g' all
+	$(MAKE) CFLAGS="$(CFLAGS) -g" all
 	$(CC) $(CFLAGS) -g $(LINKER_FLAGS) -lftprintf -L. .test.c -o test
 	
 # To make debug
