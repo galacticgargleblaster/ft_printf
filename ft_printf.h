@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:12:42 by student           #+#    #+#             */
-/*   Updated: 2019/04/04 21:43:09 by student          ###   ########.fr       */
+/*   Updated: 2019/04/06 19:41:00 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 # include <stdarg.h>
 # include <stdlib.h>
-# include "lib/libft.h"
+# include "lib/libft/libft.h"
+# include "lib/liblist/liblist.h"
 
 /*
 **				WHY MAKE YOUR OWN PRINTF?
@@ -25,6 +26,7 @@
 **		- x86_64 va_arg
 **			- https://www.stackoverflow.com/q/4958384/
 **	- gain deeper appreciation for Python's fstrings
+**	- It's an OK way to practice organizing a larger C program
 **
 **				WHY NOT MAKE YOUR OWN PRINTF?
 **
