@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 12:37:49 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 13:25:38 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,19 @@ typedef struct	s_flag
 
 #define ALL_CONVERSION_CHRS "cspdiouxX"
 #define ALL_FLAG_CHRS "#0-+ "
-#define ALL_MODIFIER_CHRS "hl"
-#define SPEC_CHAR '%'
+#define ALL_LENGTH_MODIFIER_CHRS "hl"
+#define SPEC_CHR '%'
 
 #define IS_FLAG_CHR(c) (ft_strchr(ALL_FLAG_CHRS, c) != NULL)
-#define IS_CONVERSION_CHR(c) (ft_strchr(ALL_CONVERSION_CHRS, c) != NULL)
-#define IS_MODIFIER_CHR(c) (ft_strchr(ALL_MODIFIER_CHRS, c) != NULL)
+#define IS_CONVERSION_TYPE_CHR(c) (ft_strchr(ALL_CONVERSION_CHRS, c) != NULL)
+
+#define _ISLMC(c) (ft_strchr(ALL_LENGTH_MODIFIER_CHRS, c) != NULL)
+#define IS_LENGTH_MODIFIER_CHR(c) _ISLMC(c)
 
 /*
-**	A token may be either a string literal or a conversion specification, 
+**	A token may be either a string literal or a conversion specification,
 **	but not both.
+**	As soon as the conversion is done, 'conv' is freed and set to NULL.
 */
 
 typedef struct	s_token
@@ -92,12 +95,12 @@ t_doubly_linked_list	*assemble_conversion_functions_for(char *spec)
 		list_push_head(funcs, func_for_flag(*spec));
 		spec++;
 	}
-	while (IS_CONVERSION_CHR(*spec))
+	while (IS_CONVERSION_TYPE_CHR(*spec))
 	{
 		list_push_head(funcs, func_for_conv(*spec));
 		spec++;
 	}
-	while (IS_MODIFIER_CHR(*spec))
+	while (IS_LENGTH_MODIFIER_CHR(*spec))
 		spec++;
 	return (funcs);
 }
@@ -117,18 +120,24 @@ t_conversion	*new_conversion(char *spec)
 **	return the length in characters of the entire conversion spec
 */
 
-size_t	conversion_spec_length(const char	*str)
+size_t	conversion_spec_length(const char *str)
 {
 	size_t	len;
 
 	len = 1;
 	while (IS_FLAG_CHR(str[len]))
 		len++;
-	while (IS_CONVERSION_CHR(str[len]))
+	while (IS_DIGIT(str[len]))
 		len++;
-	while (IS_MODIFIER_CHR(str[len]))
+	while (str[len] == '.')
+		len++;
+	while (IS_DIGIT(str[len]))
 		len++;
 	return (len);
+	while (IS_LENGTH_MODIFIER_CHR(str[len]))
+		len++;
+	while (IS_CONVERSION_TYPE_CHR(str[len]))
+		len++;
 }
 
 size_t	length_of_str_to_next_spec_char_or_null(const char *str)
@@ -136,7 +145,7 @@ size_t	length_of_str_to_next_spec_char_or_null(const char *str)
 	size_t	len;
 	char	*tmp;
 
-	tmp = ft_strchr(str, SPEC_CHAR);
+	tmp = ft_strchr(str, SPEC_CHR);
 	if (tmp == NULL)
 		len = ft_strlen(str);
 	else
@@ -163,16 +172,17 @@ t_doubly_linked_list	*tokenize(const char *format)
 	while (*format)
 	{
 		token = new_token();
-		if (*format == SPEC_CHAR && *(format + 1) != SPEC_CHAR)
+		if (*format == SPEC_CHR && *(format + 1) != SPEC_CHR)
 		{
 			len = conversion_spec_length(format);
 			token->conv = new_conversion(ft_strndup(format, len));
 		}
-		else if (*format == SPEC_CHAR && *(format + 1) != SPEC_CHAR)
+		else if (*format == SPEC_CHR && *(format + 1) != SPEC_CHR)
 		{
 			format++;
 			len = length_of_str_to_next_spec_char_or_null(format);
-			token->str = ft_strndup(format, len); }
+			token->str = ft_strndup(format, len);
+		}
 		else
 		{
 			len = length_of_str_to_next_spec_char_or_null(format);
@@ -199,7 +209,7 @@ t_token		*get_next_unexpanded_conversion(t_element_container *container)
 	return (NULL);
 }
 
-int	expand_va_args(const char *format, va_list ap)
+t_doubly_linked_list	*expand_va_args(const char *format, va_list ap)
 {
 	t_doubly_linked_list	*token_list;
 	t_element_container		*container;
@@ -215,15 +225,74 @@ int	expand_va_args(const char *format, va_list ap)
 		free(token->conv);
 		token->conv = NULL;
 	}
-	return (0);
+	return (token_list);
+}
+
+void	apply_conversions(const char *format, va_list ap, t_doubly_linked_list *token_list)
+{
+	(void)format;
+	(void)ap;
+	(void)token_list;
+}
+
+char	*join_token_strings(t_doubly_linked_list *token_list)
+{
+	size_t				total_len;
+	t_token				*token;
+	t_element_container	*container;
+	char				*str;
+
+	total_len = 0;
+	container = token_list->head;
+	while (container)
+	{
+		token = container->element;
+		total_len += ft_strlen(token->str);
+		container = container->prev;
+	}
+	str = ft_strnew(total_len);
+	container = token_list->head;
+	{
+		token = container->element;
+		str = ft_strcat(str, token->str);
+		container = container->prev;
+	}
+	return (str);
+}
+
+
+void	delete_conversion(t_conversion *conv)
+{
+	free (conv);
+}
+
+void	delete_token(void *token_ptr)
+{
+	t_token	*token;
+	
+	token = token_ptr;
+	if (token->str)
+		free(token->str);
+	if (token->conv)
+		delete_conversion(token->conv);
+	free(token);
 }
 
 int	ft_printf(const char *format, ...)
 {
 	va_list		ap;
+	t_doubly_linked_list	*token_list;
+	char	*str;
 
 	va_start(ap, format);
-	expand_va_args(format, ap);
+	token_list = expand_va_args(format, ap);
 	va_end(ap);
+	va_start(ap, format);
+	apply_conversions(format, ap, token_list);
+	va_end(ap);
+	str = join_token_strings(token_list);
+	delete_doubly_linked_list(token_list, &delete_token);
+	ft_putstr(str);
+	free(str);
 	return (0);
 }
