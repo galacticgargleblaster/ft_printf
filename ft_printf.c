@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 13:25:38 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 13:38:35 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,8 @@ int	ft_printf(const char *format, ...)
 	va_list		ap;
 	t_doubly_linked_list	*token_list;
 	char	*str;
+
+	ASSERT(1 == 0);
 
 	va_start(ap, format);
 	token_list = expand_va_args(format, ap);

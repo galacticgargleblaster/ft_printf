@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:12:42 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 13:15:12 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 14:02:21 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@
 **
 **	- you could be doing something more creative.
 */
+
+void	print_assertion_fail(char *cond, char *fname, int lineno);
+# define _P_FAIL_MSG(cond) { print_assertion_fail(#cond, __FILE__, __LINE__); }
+# define ASSERT(cond) { if (!(cond)) { _P_FAIL_MSG(cond); exit(-1); } }
 
 int	ft_printf(const char *format, ...);
 int	ft_fprintf(int fd, const char *format, ...);
