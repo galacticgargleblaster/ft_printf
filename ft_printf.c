@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 00:11:31 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 01:14:19 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,24 +74,24 @@ t_conversion	*new_conversion(char *spec)
 	return (conv);
 }
 
+
 /*
 **	iterates over the format string, returning a t_token instance for every
 **	section of the string starting with '%'
-**	
+**
 **	Find any '%' that isn't followed by another '%', and read until the
-**	entire format spec is consumed.  This means eating flags, conversion chars, 
+**	entire format spec is consumed.  This means eating flags,
+**	conversion chars, and modifier chars.
 */
 
-int	ft_snprintf(char *str, size_t size, const char *format, ...)
+t_doubly_linked_list	*tokenize(const char *format)
 {
-	va_list		args;
 	t_doubly_linked_list	*token_list;
 	t_token		*token;
 	char		*tmp;
 	size_t		len;
 
 	token_list = new_doubly_linked_list();
-	va_start(args, format);
 	while (*format)
 	{
 		if (*format == SPEC_CHAR)
@@ -123,10 +123,54 @@ int	ft_snprintf(char *str, size_t size, const char *format, ...)
 		token->str = ft_strndup(format, len);
 		list_push_tail(token_list, token);
 		format += len;
-		(void)str;
-		(void)size;
 	}
-	va_end(args);
+	return (token_list);
+}
+
+t_token		*get_next_unexpanded_conversion(t_element_container *container)
+{
+	t_token	*token;
+
+	while (container)
+	{
+		token = container->element;
+		if (token->conv != NULL)
+			return (token);
+		else
+			container = container->prev;
+	}
+	return (NULL);
+}
+
+/*
+**	If a token has a conversion that needs to be done, do it
+*/
+
+void		expand_conversion(t_token *token, va_list *ap)
+{
+	unsigned long long foo;
+	foo = va_arg(*ap, unsigned long long);
+	token->str = ft_itoa(foo);
+	free(token->conv);
+	token->conv = NULL;
+}
+
+
+int	ft_snprintf(char *str, size_t size, const char *format, ...)
+{
+	t_doubly_linked_list	*token_list;
+	t_element_container		*container;
+	t_token					*token;
+	va_list		ap;
+
+	token_list = tokenize(format);
+	container = token_list->head;
+	va_start(ap, format);
+	while ((token = get_next_unexpanded_conversion(container)))
+		expand_conversion(token, &ap);
+	va_end(ap);
+	(void)str;
+	(void)size;
 	return (0);
 }
 
@@ -139,9 +183,7 @@ int	ft_printf(const char *format, ...)
 	return (0);
 }
 
-
 /*
-
 		c = va_arg(ap, int);
 		printf("char %c\n", c);
 		break;
@@ -156,5 +198,4 @@ int	ft_printf(const char *format, ...)
 		d = va_arg(ap, int);
 		printf("int %d\n", d);
 		break;
-
-			*/
+*/
