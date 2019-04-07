@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:12:42 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 14:02:21 by student          ###   ########.fr       */
+/*   Updated: 2019/04/07 14:33:41 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,32 @@
 void	print_assertion_fail(char *cond, char *fname, int lineno);
 # define _P_FAIL_MSG(cond) { print_assertion_fail(#cond, __FILE__, __LINE__); }
 # define ASSERT(cond) { if (!(cond)) { _P_FAIL_MSG(cond); exit(-1); } }
+
+/*
+**	spec - print format specifier string (e.g. "%d")
+**	functions - list of functions that when applied in order, transform
+**		a chunk of va_args memory into a string of the specified format
+*/
+
+typedef struct	s_conversion
+{
+	char					*spec;
+	t_doubly_linked_list	*functions;
+}				t_conversion;
+
+/*
+**	A token may be either a string literal or a conversion specification,
+**	but not both.
+**	If it's a string literal, then 'conv' is NULL
+**	As soon as the conversion is done, 'conv' is freed and set to NULL.
+*/
+
+typedef struct	s_token
+{
+	char			*str;
+	t_conversion	*conv;
+
+}				t_token;
 
 int	ft_printf(const char *format, ...);
 int	ft_fprintf(int fd, const char *format, ...);
