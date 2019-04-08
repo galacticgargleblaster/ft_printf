@@ -25,5 +25,11 @@ int main()
 	printf("%x\n", 35);
 
 	printf("%cc\n", 39);
+	printf("%llu\n", 39);
+
+	printf("%3.2f\n", 1234.1234);
+	printf("%3s", "foobar\n");
+	// printf("%3.2s", "foobar\n");
+	printf("%#a\n", 1);
 	return (0);
 }

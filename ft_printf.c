@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 14:24:46 by student          ###   ########.fr       */
+/*   Updated: 2019/04/08 00:52:37 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,28 @@ void	*func_for_flag(char	flag)
 	(void)flag;
 	return (NULL);
 }
+
+
+void	*int_conversion(va_list ap)
+{
+	int foo;
+	foo = va_arg(ap, int);
+}
+
+void	*long_conversion(va_list ap)
+{
+	long foo;
+	foo = va_arg(ap, int);
+}
+
+void	*long_long_conversion(va_list ap)
+{
+	long long foo;
+	foo = va_arg(ap, long long)
+}
+
+
+
 void	*func_for_conv(char	flag)
 {
 	(void)flag;
@@ -99,11 +121,11 @@ size_t	conversion_spec_length(const char *str)
 		len++;
 	while (IS_DIGIT(str[len]))
 		len++;
-	return (len);
 	while (IS_LENGTH_MODIFIER_CHR(str[len]))
 		len++;
 	while (IS_CONVERSION_TYPE_CHR(str[len]))
 		len++;
+	return (len);
 }
 
 size_t	length_of_str_to_next_spec_char_or_null(const char *str)
@@ -118,7 +140,6 @@ size_t	length_of_str_to_next_spec_char_or_null(const char *str)
 		len = tmp - str;
 	return (len);
 }
-
 
 /*
 **	iterates over the format string and returns a list of tokens
