@@ -6,11 +6,15 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/07 13:59:48 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 14:03:22 by student          ###   ########.fr       */
+/*   Updated: 2019/04/09 23:03:04 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+/*
+**	A quick implementation of the type of thing you'll find in <assert.h>
+*/
 
 void	print_assertion_fail(char *cond, char *fname, int lineno)
 {

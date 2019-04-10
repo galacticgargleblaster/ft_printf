@@ -31,5 +31,6 @@ int main()
 	printf("%3s", "foobar\n");
 	// printf("%3.2s", "foobar\n");
 	printf("%#a\n", 1);
+
 	return (0);
 }

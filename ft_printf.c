@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/08 00:52:37 by student          ###   ########.fr       */
+/*   Updated: 2019/04/10 00:32:32 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,20 @@ void	*int_conversion(va_list ap)
 void	*long_conversion(va_list ap)
 {
 	long foo;
-	foo = va_arg(ap, int);
+	foo = va_arg(ap, long)
 }
 
-void	*long_long_conversion(va_list ap)
+void	*uint_conversion(va_list ap)
 {
-	long long foo;
-	foo = va_arg(ap, long long)
+	unsigned int foo;
+	foo = va_arg(ap, unsigned int);
 }
 
+void	*ulong_conversion(va_list ap)
+{
+	unsigned long foo;
+	foo = va_arg(ap, unsigned long)
+}
 
 
 void	*func_for_conv(char	flag)
@@ -181,7 +186,7 @@ t_doubly_linked_list	*tokenize(const char *format)
 	return (token_list);
 }
 
-t_token		*get_next_unexpanded_conversion(t_element_container *container)
+t_token		*get_next_conversion(t_element_container *container)
 {
 	t_token	*token;
 
@@ -205,7 +210,7 @@ t_doubly_linked_list	*expand_va_args(const char *format, va_list ap)
 
 	token_list = tokenize(format);
 	container = token_list->head;
-	while ((token = get_next_unexpanded_conversion(container)))
+	while ((token = get_next_conversion(container)))
 	{
 		foo = va_arg(ap, int);
 		token->str = ft_itoa(foo);
