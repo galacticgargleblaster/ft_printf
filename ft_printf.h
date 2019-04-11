@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:12:42 by student           #+#    #+#             */
-/*   Updated: 2019/04/07 14:33:41 by student          ###   ########.fr       */
+/*   Updated: 2019/04/10 01:55:28 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include <stdarg.h>
 # include <stdlib.h>
-# include "lib/libft/libft.h"
-# include "lib/liblist/liblist.h"
+# include <libft.h>
+# include <liblist.h>
 
 /*
 **				WHY MAKE YOUR OWN PRINTF?

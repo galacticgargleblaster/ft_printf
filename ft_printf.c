@@ -6,13 +6,15 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/10 00:32:32 by student          ###   ########.fr       */
+/*   Updated: 2019/04/10 20:45:38 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include <stdarg.h>
 #include <stdio.h>
+
+#include "ft_printf.h"
+#include "conversions.h"
 
 #define ALL_CONVERSION_CHRS "cspdiouxX"
 #define ALL_FLAG_CHRS "#0-+ "
@@ -41,37 +43,6 @@ void	*func_for_flag(char	flag)
 	return (NULL);
 }
 
-
-void	*int_conversion(va_list ap)
-{
-	int foo;
-	foo = va_arg(ap, int);
-}
-
-void	*long_conversion(va_list ap)
-{
-	long foo;
-	foo = va_arg(ap, long)
-}
-
-void	*uint_conversion(va_list ap)
-{
-	unsigned int foo;
-	foo = va_arg(ap, unsigned int);
-}
-
-void	*ulong_conversion(va_list ap)
-{
-	unsigned long foo;
-	foo = va_arg(ap, unsigned long)
-}
-
-
-void	*func_for_conv(char	flag)
-{
-	(void)flag;
-	return (NULL);
-}
 
 /*
 **	Given a spec, return a list of functions, that when applied in the order

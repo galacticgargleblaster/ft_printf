@@ -6,7 +6,7 @@
 #    By: student <student@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/01 10:18:11 by nkirkby           #+#    #+#              #
-#    Updated: 2019/04/07 00:08:08 by student          ###   ########.fr        #
+#    Updated: 2019/04/10 20:45:05 by student          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,10 +18,10 @@ SOURCE_BASENAMES = $(notdir $(SOURCES))
 
 LIBFT_DIR = ./lib/libft
 LIBLIST_DIR = ./lib/liblist
-INCLUDES = .
+INCLUDES = ./ $(LIBFT_DIR) $(LIBLIST_DIR)
 CC = clang
 CPP = clang -E
-CFLAGS = -Wall -Werror -Wextra -I$(INCLUDES)
+CFLAGS = -Wall -Werror -Wextra $(foreach dir,$(INCLUDES),-I$(dir))
 LINKER_FLAGS = -lft -L$(LIBFT_DIR) -llist -L$(LIBLIST_DIR)
 
 # ------------------------------------------------------------------------------#
