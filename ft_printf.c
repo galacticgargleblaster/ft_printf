@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/10 20:45:38 by student          ###   ########.fr       */
+/*   Updated: 2019/04/14 00:37:44 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #include "ft_printf.h"
-#include "conversions.h"
+#include "conversion.h"
 
 #define ALL_CONVERSION_CHRS "cspdiouxX"
 #define ALL_FLAG_CHRS "#0-+ "
@@ -35,48 +35,6 @@ t_token		*new_token(void)
 	token->str = NULL;
 	token->conv = NULL;
 	return (token);
-}
-
-void	*func_for_flag(char	flag)
-{
-	(void)flag;
-	return (NULL);
-}
-
-
-/*
-**	Given a spec, return a list of functions, that when applied in the order
-**	they appear in the list, return a string in the specified format
-*/
-
-t_doubly_linked_list	*assemble_conversion_functions_for(char *spec)
-{
-	t_doubly_linked_list	*funcs;
-
-	funcs = new_doubly_linked_list();
-	while (IS_FLAG_CHR(*spec))
-	{
-		list_push_head(funcs, func_for_flag(*spec));
-		spec++;
-	}
-	while (IS_CONVERSION_TYPE_CHR(*spec))
-	{
-		list_push_head(funcs, func_for_conv(*spec));
-		spec++;
-	}
-	while (IS_LENGTH_MODIFIER_CHR(*spec))
-		spec++;
-	return (funcs);
-}
-
-t_conversion	*new_conversion(char *spec)
-{
-	t_conversion	*conv;
-
-	conv = malloc(sizeof(t_conversion));
-	conv->spec = spec;
-	conv->functions = assemble_conversion_functions_for(spec);
-	return (conv);
 }
 
 /*
@@ -233,7 +191,7 @@ void	delete_conversion(t_conversion *conv)
 void	delete_token(void *token_ptr)
 {
 	t_token	*token;
-	
+
 	token = token_ptr;
 	if (token->str)
 		free(token->str);
@@ -242,21 +200,44 @@ void	delete_token(void *token_ptr)
 	free(token);
 }
 
+int	ft_va_list_printf(char *str, size_t size, const char *format, va_list args)
+{
+	t_doubly_linked_list	*token_list;
+	char *tmp;
+
+	token_list = expand_va_args(format, args);
+	apply_conversions(format, args, token_list);
+	tmp = join_token_strings(token_list);
+	delete_doubly_linked_list(token_list, &delete_token);
+	ft_strncpy(str, tmp, size);
+	free(tmp);
+	return (0);
+}
+
+#define LARGE_NUMBER_REMOVE_ME	1000
+
 int	ft_printf(const char *format, ...)
 {
-	va_list		ap;
-	t_doubly_linked_list	*token_list;
 	char	*str;
+	va_list	args;
+	int		return_value;
 
-	va_start(ap, format);
-	token_list = expand_va_args(format, ap);
-	va_end(ap);
-	va_start(ap, format);
-	apply_conversions(format, ap, token_list);
-	va_end(ap);
-	str = join_token_strings(token_list);
-	delete_doubly_linked_list(token_list, &delete_token);
+	str = malloc(LARGE_NUMBER_REMOVE_ME);
+	va_start(args, format);
+	return_value = ft_va_list_printf(str, LARGE_NUMBER_REMOVE_ME, format, args);
+	va_end(args);
 	ft_putstr(str);
 	free(str);
-	return (0);
+	return (return_value);
+}
+
+int	ft_snprintf(char *str, size_t size, const char *format, ...)
+{
+	va_list	args;
+	int		return_value;
+
+	va_start(args, format);
+	return_value = ft_va_list_printf(str, size, format, args);
+	va_end(args);
+	return (return_value);
 }

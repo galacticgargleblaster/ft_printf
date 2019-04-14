@@ -1,68 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   conversions.c                                      :+:      :+:    :+:   */
+/*   conversion.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/10 02:21:02 by student          ###   ########.fr       */
+/*   Updated: 2019/04/14 00:40:11 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define ALL_CONVERSION_CHRS "cspdiouxX"
 
-#include <libft.h>
-#include <ft_printf.h>
-
-char	*int_conversion(va_list ap)
-{
-	int foo;
-	foo = va_arg(ap, int);
-	return (ft_itoa(foo));
-}
-
-void	*long_conversion(va_list ap)
-{
-	long foo;
-	foo = va_arg(ap, long);
-	return (ft_lltoa_base(foo, 10));
-}
-
-void	*uint_conversion(va_list ap)
-{
-	unsigned int foo;
-	foo = va_arg(ap, unsigned int);
-	return (ft_lltoa_base(foo, 10));
-}
-
-void	*ulong_conversion(va_list ap)
-{
-	unsigned long foo;
-	foo = va_arg(ap, unsigned long);
-	return (ft_ulltoa_base(foo, 10));
-}
-
-void 	*char_conversion(va_list ap)
-{
-	char	*foo;
-	char	*str;
-	int		tmp;
-
-	tmp = va_arg(ap, int);
-	foo = (char *)(&tmp);
-	str = ft_strndup(foo, 1);
-	return (str);
-}
-
-void	*str_conversion(va_list ap)
-{
-	(void)ap;
-	ASSERT(1 == 0);
-	return NULL;
-}
-
-
+#include "conversion.h"
+#include <liblist.h>
 
 /*
 **	returns the conversion function corresponding to the provided
@@ -77,4 +28,39 @@ void	*func_for_conv(char	flag)
 		return (&str_conversion);
 
 	return (NULL);
+}
+
+/*
+**	Given a spec, return a list of functions, that when applied in the order
+**	they appear in the list, return a string in the specified format
+*/
+
+t_doubly_linked_list	*assemble_conversion_functions_for(char *spec)
+{
+	t_doubly_linked_list	*funcs;
+
+	funcs = new_doubly_linked_list();
+	while (IS_FLAG_CHR(*spec))
+	{
+		list_push_head(funcs, func_for_flag(*spec));
+		spec++;
+	}
+	while (IS_CONVERSION_TYPE_CHR(*spec))
+	{
+		list_push_head(funcs, func_for_conv(*spec));
+		spec++;
+	}
+	while (IS_LENGTH_MODIFIER_CHR(*spec))
+		spec++;
+	return (funcs);
+}
+
+t_conversion	*new_conversion(char *spec)
+{
+	t_conversion	*conv;
+
+	conv = malloc(sizeof(t_conversion));
+	conv->spec = spec;
+	conv->functions = assemble_conversion_functions_for(spec);
+	return (conv);
 }
