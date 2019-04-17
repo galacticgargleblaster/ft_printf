@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/04/14 00:36:04 by student          ###   ########.fr       */
+/*   Updated: 2019/04/17 01:40:20 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,21 @@
 #ifndef CONVERSION_H
 # define CONVERSION_H
 
-#include <stdarg.h>
+# include <stdarg.h>
+# include <liblist.h>
+# include <libft.h>
+
+# define SPEC_CHR '%'
+
+# define ALL_CONVERSION_CHRS "cspdiouxX"
+# define ALL_FLAG_CHRS "#0-+ "
+# define ALL_LENGTH_MODIFIER_CHRS "hl"
+
+# define IS_FLAG_CHR(c) (ft_strchr(ALL_FLAG_CHRS, c) != NULL)
+# define IS_CONVERSION_TYPE_CHR(c) (ft_strchr(ALL_CONVERSION_CHRS, c) != NULL)
+
+# define _ISLMC(c) (ft_strchr(ALL_LENGTH_MODIFIER_CHRS, c) != NULL)
+# define IS_LENGTH_MODIFIER_CHR(c) _ISLMC(c)
 
 /*
 **	spec - print format specifier string (e.g. "%d")
@@ -28,8 +42,14 @@ typedef struct	s_conversion
 	t_doubly_linked_list	*functions;
 }				t_conversion;
 
-void	*func_for_conv(char	flag);
+void	*func_for_conv(char	conv);
+void	*func_for_flag(char	flag);
 void	*char_conversion(va_list ap);
 void	*str_conversion(va_list ap);
+
+t_conversion	*new_conversion(char *spec);
+void			delete_conversion(t_conversion *conv);
+size_t			conversion_spec_length(const char *str);
+size_t			length_of_str_to_next_spec_char_or_null(const char *str);
 
 #endif

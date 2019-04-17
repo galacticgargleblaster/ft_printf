@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:12:42 by student           #+#    #+#             */
-/*   Updated: 2019/04/14 00:35:44 by student          ###   ########.fr       */
+/*   Updated: 2019/04/17 01:32:33 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <libft.h>
 # include <liblist.h>
 # include "conversion.h"
+# include "token.h"
 
 /*
 **				WHY MAKE YOUR OWN PRINTF?
@@ -40,26 +41,25 @@
 **	test.c:5:15: warning: more '%' conversions than data arguments [-Wformat]
 **		printf("%s\n%s\n", "foo");
 **
-**	- you could be doing something more creative.
+**	- you could be doing something more creative, like trying to write a
+**		program that uses every syscall shown by `man syscall` to print a
+**		nyancat.
 */
+
 
 void	print_assertion_fail(char *cond, char *fname, int lineno);
 # define _P_FAIL_MSG(cond) { print_assertion_fail(#cond, __FILE__, __LINE__); }
 # define ASSERT(cond) { if (!(cond)) { _P_FAIL_MSG(cond); exit(-1); } }
 
+
 /*
-**	A token may be either a string literal or a conversion specification,
-**	but not both.
-**	If it's a string literal, then 'conv' is NULL
-**	As soon as the conversion is done, 'conv' is freed and set to NULL.
+**	printf("SPEC text text SPEC")
+**	where SPEC takes the form:
+**		%(FLAG)*(FIELD_WIDTH)*(PRECISION)*CONVERSION_SPECIFIER
 */
 
-typedef struct	s_token
-{
-	char			*str;
-	t_conversion	*conv;
+# define SPEC_CHR '%'
 
-}				t_token;
 
 int	ft_printf(const char *format, ...);
 int	ft_fprintf(int fd, const char *format, ...);

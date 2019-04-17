@@ -6,11 +6,9 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/14 00:40:11 by student          ###   ########.fr       */
+/*   Updated: 2019/04/17 01:40:10 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#define ALL_CONVERSION_CHRS "cspdiouxX"
 
 #include "conversion.h"
 #include <liblist.h>
@@ -20,11 +18,11 @@
 **	character
 */
 
-void	*func_for_conv(char	flag)
+void	*func_for_conv(char	conv)
 {
-	if (flag == 'c')
+	if (conv == 'c')
 		return (&char_conversion);
-	else if (flag == 's')
+	else if (conv == 's')
 		return (&str_conversion);
 
 	return (NULL);
@@ -63,4 +61,34 @@ t_conversion	*new_conversion(char *spec)
 	conv->spec = spec;
 	conv->functions = assemble_conversion_functions_for(spec);
 	return (conv);
+}
+
+void	delete_conversion(t_conversion *conv)
+{
+	free (conv);
+}
+
+/*
+**	Given a spec (a string beginning with single '%'),
+**	return the length in characters of the entire conversion spec
+*/
+
+size_t		conversion_spec_length(const char *str)
+{
+	size_t	len;
+
+	len = 1;
+	while (IS_FLAG_CHR(str[len]))
+		len++;
+	while (IS_DIGIT(str[len]))
+		len++;
+	while (str[len] == '.')
+		len++;
+	while (IS_DIGIT(str[len]))
+		len++;
+	while (IS_LENGTH_MODIFIER_CHR(str[len]))
+		len++;
+	while (IS_CONVERSION_TYPE_CHR(str[len]))
+		len++;
+	return (len);
 }
