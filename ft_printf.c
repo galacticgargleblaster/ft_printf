@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 01:40:03 by student          ###   ########.fr       */
+/*   Updated: 2019/04/17 02:03:02 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void	apply_conversions(const char *format, va_list ap, t_doubly_linked_list *tok
 	(void)ap;
 	(void)token_list;
 }
-
-
 
 int	ft_va_list_printf(char *str, size_t size, const char *format, va_list args)
 {

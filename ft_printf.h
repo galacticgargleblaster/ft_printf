@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:12:42 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 01:32:33 by student          ###   ########.fr       */
+/*   Updated: 2019/04/17 03:06:53 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,6 @@ void	print_assertion_fail(char *cond, char *fname, int lineno);
 **	where SPEC takes the form:
 **		%(FLAG)*(FIELD_WIDTH)*(PRECISION)*CONVERSION_SPECIFIER
 */
-
-# define SPEC_CHR '%'
-
 
 int	ft_printf(const char *format, ...);
 int	ft_fprintf(int fd, const char *format, ...);

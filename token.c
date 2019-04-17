@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 01:37:32 by student          ###   ########.fr       */
+/*   Updated: 2019/04/17 03:09:49 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,24 @@ t_token		*new_token(void)
 	return (token);
 }
 
+size_t	store_conversion(t_token *token, const char *format)
+{
+	size_t	len;
+
+	len = conversion_spec_length(format);
+	token->conv = new_conversion(ft_strndup(format, len));
+	return (len);
+}
+
+size_t	store_str(t_token *token, const char *format)
+{
+	size_t	len;
+
+	len = length_of_str_to_next_spec_char_or_null(format);
+	token->str = ft_strndup(format, len);
+	return (len);
+}
+
 /*
 **	iterates over the format string and returns a list of tokens
 **
@@ -39,33 +57,25 @@ t_doubly_linked_list	*tokenize(const char *format)
 	t_doubly_linked_list	*token_list;
 	t_token		*token;
 	size_t		len;
-
+	
 	token_list = new_doubly_linked_list();
 	while (*format)
 	{
 		token = new_token();
-		if (*format == SPEC_CHR && *(format + 1) != SPEC_CHR)
-		{
-			len = conversion_spec_length(format);
-			token->conv = new_conversion(ft_strndup(format, len));
-		}
-		else if (*format == SPEC_CHR && *(format + 1) != SPEC_CHR)
+		if (*format == SPEC_CHR && *(format + 1) && *(format + 1) != SPEC_CHR)
+			len = store_conversion(token, format);
+		else if (*format == SPEC_CHR && *(format + 1) && *(format + 1) == SPEC_CHR)
 		{
 			format++;
-			len = length_of_str_to_next_spec_char_or_null(format);
-			token->str = ft_strndup(format, len);
+			len = 1 + store_str(token, format);
 		}
 		else
-		{
-			len = length_of_str_to_next_spec_char_or_null(format);
-			token->str = ft_strndup(format, len);
-		}
+			len = store_str(token, format);
 		list_push_tail(token_list, token);
 		format += len;
 	}
 	return (token_list);
 }
-
 
 /*
 **	Given a list of tokens, returns a new string that is the concatenation of
@@ -88,6 +98,7 @@ char					*join_token_strings(t_doubly_linked_list *token_list)
 		container = container->prev;
 	}
 	str = ft_strnew(total_len);
+	ft_memset(str, 0, total_len);
 	container = token_list->head;
 	while (container)
 	{
