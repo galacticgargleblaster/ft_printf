@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 02:03:02 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 17:19:34 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,30 +17,31 @@
 #include "conversion.h"
 
 
-t_doubly_linked_list	*expand_va_args(const char *format, va_list ap)
+/*
+**	unmarshal the memory from va_list, and apply the conversion functions
+**	necessary to expand it into a string.
+*/
+
+void	apply_conversions(va_list ap, t_doubly_linked_list *token_list)
 {
-	t_doubly_linked_list	*token_list;
-	t_element_container		*container;
 	t_token					*token;
-	int foo;
+	generic_conversion_function *func;
+	size_t idx;
+	size_t f_idx;
 
-	token_list = tokenize(format);
-	container = token_list->head;
-	while ((token = get_next_conversion(container)))
+	idx = token_list->size - 1;
+	while ((token = list_get_index(token_list, idx)))
 	{
-		foo = va_arg(ap, int);
-		token->str = ft_itoa(foo);
-		free(token->conv);
-		token->conv = NULL;
+		if (token->conv)
+		{
+			f_idx = 0;
+			while ((func = list_get_index(token->conv->functions, f_idx++)))
+				token->str = func(ap);
+			free(token->conv);
+			token->conv = NULL;
+		}
+		idx--;
 	}
-	return (token_list);
-}
-
-void	apply_conversions(const char *format, va_list ap, t_doubly_linked_list *token_list)
-{
-	(void)format;
-	(void)ap;
-	(void)token_list;
 }
 
 int	ft_va_list_printf(char *str, size_t size, const char *format, va_list args)
@@ -48,13 +49,13 @@ int	ft_va_list_printf(char *str, size_t size, const char *format, va_list args)
 	t_doubly_linked_list	*token_list;
 	char *tmp;
 
-	token_list = expand_va_args(format, args);
-	apply_conversions(format, args, token_list);
+	token_list = tokenize(format);
+	apply_conversions(args, token_list);
 	tmp = join_token_strings(token_list);
 	delete_doubly_linked_list(token_list, &delete_token);
 	ft_strncpy(str, tmp, size);
 	free(tmp);
-	return (0);
+	return (ft_strlen(str));
 }
 
 #define LARGE_NUMBER_REMOVE_ME	1000

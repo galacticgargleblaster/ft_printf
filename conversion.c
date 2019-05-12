@@ -6,11 +6,12 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 01:40:10 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 16:21:15 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "conversion.h"
+#include "assert.h"
 #include <liblist.h>
 
 /*
@@ -24,12 +25,18 @@ void	*func_for_conv(char	conv)
 		return (&char_conversion);
 	else if (conv == 's')
 		return (&str_conversion);
-
+	else if (conv == 'd')
+		return (&int_conversion);
+	else if (conv == 'u')
+		return (&uint_conversion);
+	else
+		ASSERT(0);
 	return (NULL);
 }
 
 /*
-**	Given a spec, return a list of functions, that when applied in the order
+**	Given a format spec, (e.g. '%ull') return a list of functions, that when 
+**	applied in the order
 **	they appear in the list, return a string in the specified format
 */
 
@@ -37,6 +44,8 @@ t_doubly_linked_list	*assemble_conversion_functions_for(char *spec)
 {
 	t_doubly_linked_list	*funcs;
 
+	ASSERT(*spec == '%');
+	spec++;
 	funcs = new_doubly_linked_list();
 	while (IS_FLAG_CHR(*spec))
 	{

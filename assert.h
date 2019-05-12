@@ -1,32 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   conversion_char_types.c                            :+:      :+:    :+:   */
+/*   assert.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 16:56:37 by student          ###   ########.fr       */
+/*   Created: 2019/05/11 16:03:06 by student           #+#    #+#             */
+/*   Updated: 2019/05/11 16:03:53 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
-#include <ft_printf.h>
-#include "assert.h"
+#ifndef ASSERT_H
+# define ASSERT_H
 
-void 	*char_conversion(va_list ap)
-{
-	char	*foo;
-	char	*str;
-	int		tmp;
+void	print_assertion_fail(char *cond, char *fname, int lineno);
+# define _P_FAIL_MSG(cond) { print_assertion_fail(#cond, __FILE__, __LINE__); }
+# define ASSERT(cond) { if (!(cond)) { _P_FAIL_MSG(cond); exit(-1); } }
 
-	tmp = va_arg(ap, int);
-	foo = (char *)(&tmp);
-	str = ft_strndup(foo, 1);
-	return (str);
-}
-
-void	*str_conversion(va_list ap)
-{
-	return ft_strdup(va_arg(ap, char *));
-}
+#endif

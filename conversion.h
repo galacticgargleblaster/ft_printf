@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 03:09:08 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 16:21:09 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,11 @@ void	*func_for_conv(char	conv);
 void	*func_for_flag(char	flag);
 void	*char_conversion(va_list ap);
 void	*str_conversion(va_list ap);
+void	*int_conversion(va_list ap);
+void	*uint_conversion(va_list ap);
+
+typedef char	*generic_conversion_function(va_list);
+typedef char	*generic_flag_function(char *);
 
 t_conversion	*new_conversion(char *spec);
 void			delete_conversion(t_conversion *conv);

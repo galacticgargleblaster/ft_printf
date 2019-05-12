@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:12:42 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 03:06:53 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 16:03:57 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,6 @@
 **		program that uses every syscall shown by `man syscall` to print a
 **		nyancat.
 */
-
-
-void	print_assertion_fail(char *cond, char *fname, int lineno);
-# define _P_FAIL_MSG(cond) { print_assertion_fail(#cond, __FILE__, __LINE__); }
-# define ASSERT(cond) { if (!(cond)) { _P_FAIL_MSG(cond); exit(-1); } }
-
 
 /*
 **	printf("SPEC text text SPEC")

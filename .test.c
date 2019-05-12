@@ -14,8 +14,11 @@ void compare_and_print_result(char *str_a, char *str_b)
 		ft_xxd(str_b, ft_strlen(str_b));
 	}
 	else
-		ft_putstr("OK\n");
-	ft_putstr("\n");
+	{
+		ft_putstr("OK\t -- ");
+		ft_putstr(str_a);
+		ft_putstr("\n");
+	}
 }
 
 #define COMPARE(...)\
@@ -31,6 +34,10 @@ void compare_and_print_result(char *str_a, char *str_b)
 
 int main()
 {
-	int foo = 50;
-	COMPARE("foo %d, %d, %d", foo, 200, -10);
+	int n = 50;
+	COMPARE("foo %d, %d, %d", n, 200, -10);
+	COMPARE("%u\n", 2000);
+	COMPARE("%s\t%s", "before", "after");
+	COMPARE("Hello, %s.", "apfth")
+
 }

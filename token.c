@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/17 03:09:49 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 16:55:47 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,26 +86,18 @@ char					*join_token_strings(t_doubly_linked_list *token_list)
 {
 	size_t				total_len;
 	t_token				*token;
-	t_element_container	*container;
 	char				*str;
+	size_t				idx;
 
 	total_len = 0;
-	container = token_list->head;
-	while (container)
-	{
-		token = container->element;
+	idx = 0;
+	while ((token = list_get_index(token_list, idx++)))
 		total_len += ft_strlen(token->str);
-		container = container->prev;
-	}
 	str = ft_strnew(total_len);
 	ft_memset(str, 0, total_len);
-	container = token_list->head;
-	while (container)
-	{
-		token = container->element;
+	idx = token_list->size - 1;
+	while ((token = list_get_index(token_list, idx--)))
 		str = ft_strcat(str, token->str);
-		container = container->prev;
-	}
 	return (str);
 }
 

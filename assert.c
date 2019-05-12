@@ -6,11 +6,13 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/07 13:59:48 by student           #+#    #+#             */
-/*   Updated: 2019/04/09 23:03:04 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 16:05:30 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include <libft.h>
+#include <stdlib.h>
+#include "assert.h"
 
 /*
 **	A quick implementation of the type of thing you'll find in <assert.h>

@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/04/14 00:39:49 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 16:20:55 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,21 @@ char	*int_conversion(va_list ap)
 	return (ft_itoa(foo));
 }
 
-void	*long_conversion(va_list ap)
+char	*long_conversion(va_list ap)
 {
 	long foo;
 	foo = va_arg(ap, long);
 	return (ft_lltoa_base(foo, 10));
 }
 
-void	*uint_conversion(va_list ap)
+char	*uint_conversion(va_list ap)
 {
 	unsigned int foo;
 	foo = va_arg(ap, unsigned int);
 	return (ft_lltoa_base(foo, 10));
 }
 
-void	*ulong_conversion(va_list ap)
+char	*ulong_conversion(va_list ap)
 {
 	unsigned long foo;
 	foo = va_arg(ap, unsigned long);
