@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 21:55:19 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 22:02:58 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,13 @@ t_conversion	*new_conversion(const char *format)
 	t_conversion	*conv;
 
 	conv = malloc(sizeof(t_conversion));
+	conv->spec = NULL;
+	conv->func = NULL;
+	conv->arg_number = 0;
+	conv->min_field_width = -1;
+	conv->precision = -1;
+	conv->flags = 0;
+	conv->length_modifier = 0;
 	parse_conversion(format, conv);
 	return (conv);
 }

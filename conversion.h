@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 21:53:17 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 22:21:25 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ typedef struct	s_conversion
 	int						flags;
 	int						length_modifier;
 }				t_conversion;
+
+# define IS_STR_CONV(conv) (ft_endswith(conv->spec, 's'))
 
 void	*func_for_conv(char	conv);
 void	*func_for_flag(char	flag);
