@@ -3,6 +3,7 @@
 int main()
 {
 	printf("%1$d, %1$c\n", 35);
+	printf("%0$d, %0$c\n", 35);
 	printf("%#x\n", 35);
 	printf("%x\n", 35);
 	

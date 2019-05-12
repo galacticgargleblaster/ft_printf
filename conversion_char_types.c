@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 16:56:37 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 20:11:09 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,11 @@
 
 void 	*char_conversion(va_list ap)
 {
-	char	*foo;
-	char	*str;
 	int		tmp;
+	char	*str;
 
 	tmp = va_arg(ap, int);
-	foo = (char *)(&tmp);
-	str = ft_strndup(foo, 1);
+	str = ft_strndup((char *)(&tmp), 1);
 	return (str);
 }
 

@@ -38,6 +38,7 @@ int main()
 	COMPARE("foo %d, %d, %d", n, 200, -10);
 	COMPARE("%u\n", 2000);
 	COMPARE("%s\t%s", "before", "after");
-	COMPARE("Hello, %s.", "apfth")
-
+	COMPARE("Hello, %s.", "ftpf")
+	COMPARE("%c", 37);
+	COMPARE("%32s", "abc");
 }

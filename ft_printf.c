@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 17:19:34 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 21:53:06 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,17 @@
 #include "conversion.h"
 
 
+void	do_conversion(va_list ap, t_token *token)
+{
+	if (token->conv)
+	{
+		token->str = token->conv->func(ap);
+
+		delete_conversion(token->conv);
+		token->conv = NULL;
+	}
+}
+
 /*
 **	unmarshal the memory from va_list, and apply the conversion functions
 **	necessary to expand it into a string.
@@ -25,21 +36,12 @@
 void	apply_conversions(va_list ap, t_doubly_linked_list *token_list)
 {
 	t_token					*token;
-	generic_conversion_function *func;
 	size_t idx;
-	size_t f_idx;
 
 	idx = token_list->size - 1;
 	while ((token = list_get_index(token_list, idx)))
 	{
-		if (token->conv)
-		{
-			f_idx = 0;
-			while ((func = list_get_index(token->conv->functions, f_idx++)))
-				token->str = func(ap);
-			free(token->conv);
-			token->conv = NULL;
-		}
+		do_conversion(ap, token);
 		idx--;
 	}
 }

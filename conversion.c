@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 16:21:15 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 21:55:19 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,70 +34,94 @@ void	*func_for_conv(char	conv)
 	return (NULL);
 }
 
-/*
-**	Given a format spec, (e.g. '%ull') return a list of functions, that when 
-**	applied in the order
-**	they appear in the list, return a string in the specified format
-*/
-
-t_doubly_linked_list	*assemble_conversion_functions_for(char *spec)
+void			store_flag(const char flag, t_conversion *conv)
 {
-	t_doubly_linked_list	*funcs;
-
-	ASSERT(*spec == '%');
-	spec++;
-	funcs = new_doubly_linked_list();
-	while (IS_FLAG_CHR(*spec))
-	{
-		list_push_head(funcs, func_for_flag(*spec));
-		spec++;
-	}
-	while (IS_CONVERSION_TYPE_CHR(*spec))
-	{
-		list_push_head(funcs, func_for_conv(*spec));
-		spec++;
-	}
-	while (IS_LENGTH_MODIFIER_CHR(*spec))
-		spec++;
-	return (funcs);
+	if (flag == '#')
+		conv->flags |= FLAG_ALTERNATE_FORM;
+	else if (flag == '0')
+		conv->flags |= FLAG_ZERO_PADDING;
+	else if (flag == '-')
+		conv->flags |= FLAG_NEGATIVE_FIELD_WIDTH;
+	else if (flag == ' ')
+		conv->flags |= FLAG_SPACE_BEFORE;
+	else if (flag == '+')
+		conv->flags |= FLAG_ALWAYS_INCLUDE_SIGN;
+	else
+		ASSERT(IS_FLAG_CHR(flag));
 }
 
-t_conversion	*new_conversion(char *spec)
+size_t			store_digits(const char *ascii, int *location)
+{
+	size_t	len;
+	char	*tmp;
+
+	*location = ft_atoi(ascii);
+	tmp = ft_itoa(*location);
+	len = ft_strlen(tmp);
+	free(tmp);
+	return (len);
+}
+
+size_t			store_length_modifier(const char *format, t_conversion *conv)
+{
+	if (format[0] == 'h')
+	{
+		if (format[1] == 'h')
+		{
+			conv->length_modifier |= LENGTH_MODIFIER_hh;
+			return (2);
+		}
+		else
+		{
+			conv->length_modifier |= LENGTH_MODIFIER_h;
+			return (1);
+		}
+	}
+	else if (format[0] == 'l')
+	{
+		if (format[1] == 'l')
+		{
+			conv->length_modifier |= LENGTH_MODIFIER_ll;
+			return (2);
+		}
+		else
+		{
+			conv->length_modifier |= LENGTH_MODIFIER_l;
+			return (1);
+		}
+	}
+	return (0);
+}
+
+size_t			parse_conversion(const char *format, t_conversion *conv)
+{
+	size_t	len;
+
+	len = 0;
+	ASSERT(format[len++] == '%')
+	while (IS_FLAG_CHR(format[len]))
+		store_flag(format[len++], conv);
+	if (IS_DIGIT(format[len]))
+		len += store_digits(format + len, &conv->min_field_width);
+	if (format[len] == '.' && (IS_DIGIT(format[++len])))
+		len += store_digits(format + len, &conv->precision);
+	len += store_length_modifier(&format[len], conv);
+	conv->func = func_for_conv(format[len++]);
+	conv->spec = ft_strndup(format, len);
+	return len;
+}
+
+t_conversion	*new_conversion(const char *format)
 {
 	t_conversion	*conv;
 
 	conv = malloc(sizeof(t_conversion));
-	conv->spec = spec;
-	conv->functions = assemble_conversion_functions_for(spec);
+	parse_conversion(format, conv);
 	return (conv);
 }
 
 void	delete_conversion(t_conversion *conv)
 {
+	free (conv->spec);
 	free (conv);
-}
-
-/*
-**	Given a spec (a string beginning with single '%'),
-**	return the length in characters of the entire conversion spec
-*/
-
-size_t		conversion_spec_length(const char *str)
-{
-	size_t	len;
-
-	len = 1;
-	while (IS_FLAG_CHR(str[len]))
-		len++;
-	while (IS_DIGIT(str[len]))
-		len++;
-	while (str[len] == '.')
-		len++;
-	while (IS_DIGIT(str[len]))
-		len++;
-	while (IS_LENGTH_MODIFIER_CHR(str[len]))
-		len++;
-	while (IS_CONVERSION_TYPE_CHR(str[len]))
-		len++;
-	return (len);
 }

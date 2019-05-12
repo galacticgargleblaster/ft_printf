@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 16:55:47 by student          ###   ########.fr       */
+/*   Updated: 2019/05/11 21:45:52 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,21 @@ t_token		*new_token(void)
 	return (token);
 }
 
+/*
+**	Stores a parsed conversion specification
+*/
+
 size_t	store_conversion(t_token *token, const char *format)
 {
-	size_t	len;
-
-	len = conversion_spec_length(format);
-	token->conv = new_conversion(ft_strndup(format, len));
-	return (len);
+	token->conv = new_conversion(format);
+	return ft_strlen(token->conv->spec);
 }
 
-size_t	store_str(t_token *token, const char *format)
+/*
+**	Stores a plain string -- no conversion necessary
+*/
+
+size_t	store_string(t_token *token, const char *format)
 {
 	size_t	len;
 
@@ -67,10 +72,10 @@ t_doubly_linked_list	*tokenize(const char *format)
 		else if (*format == SPEC_CHR && *(format + 1) && *(format + 1) == SPEC_CHR)
 		{
 			format++;
-			len = 1 + store_str(token, format);
+			len = 1 + store_string(token, format);
 		}
 		else
-			len = store_str(token, format);
+			len = store_string(token, format);
 		list_push_tail(token_list, token);
 		format += len;
 	}
