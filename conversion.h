@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 12:00:17 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 12:48:37 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,9 @@ char	*uint_conversion(const t_conversion *c, va_list ap);
 char	*hex_conversion(const t_conversion *c, va_list ap);
 
 char	*expand_field_width(const t_conversion *c, char *str);
+# define PAD_LEFT 0
+# define PAD_RIGHT 1
+char	*pad_with_char(const int width, const int padding_direction, const char c, char *str);
 
 t_conversion	*new_conversion(const char *format);
 void			delete_conversion(t_conversion *conv);
