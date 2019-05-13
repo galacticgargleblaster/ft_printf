@@ -1,44 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   conversion_char_types.c                            :+:      :+:    :+:   */
+/*   conversion_operations.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 11:55:55 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 12:10:59 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
-#include <ft_printf.h>
-#include "assert.h"
 #include "conversion.h"
+#include "assert.h"
 
-char	*char_conversion(const t_conversion *c, va_list ap)
+char	*expand_field_width(const t_conversion *c, char *str)
 {
-	int		tmp;
-	char	*str;
+	char	*tmp;
+	ssize_t	len;
 
-	(void)c;
-	tmp = va_arg(ap, int);
-	str = ft_strndup((char *)(&tmp), 1);
-	return (str);
-}
-
-char	*str_conversion(const t_conversion *c, va_list ap)
-{
-	char	*str;
-
-	(void)c;
-	str = ft_strdup(va_arg(ap, char *));
-	str = expand_field_width(c, str);
+	if (c->min_field_width >= 0)
+	{
+		len = c->min_field_width - ft_strlen(str);
+		if (len > 0)
+		{
+			tmp = ft_strnew(len);
+			ft_memset(tmp, ' ', len);
+			tmp = ft_strjoin(tmp, str);
+			free(str);
+			str = tmp;
+		}
+	}
 	return str;
-}
-
-char	*hex_conversion(const t_conversion *c, va_list ap)
-{
-	(void)ap;
-	(void)c;
-	return 0;
 }

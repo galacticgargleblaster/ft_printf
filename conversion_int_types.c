@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 11:31:19 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 12:04:11 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,25 @@
 #include <stdarg.h>
 #include "conversion.h"
 
-char	*int_conversion(va_list ap, t_conversion *c)
+char	*int_conversion(const t_conversion *c, va_list ap)
 {
 	int		arg;
 	char	*str;
 	char	*tmp;
 
 	arg = va_arg(ap, int);
-	tmp = ft_itoa(arg);
-	if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN && arg >= 0)
+	str = ft_itoa(arg);
+	if (arg >= 0 && c->flags & FLAG_ALWAYS_INCLUDE_SIGN)
 	{
-		str = ft_strjoin("+", tmp);
+		tmp = str;
+		str = ft_strjoin("+", str);
 		free(tmp);
 	}
-	else
-		str = tmp;
+	str = expand_field_width(c, str);
 	return (str);
 }
 
-char	*long_conversion(va_list ap, t_conversion *c)
+char	*long_conversion(const t_conversion *c, va_list ap)
 {
 	long foo;
 
@@ -41,7 +41,7 @@ char	*long_conversion(va_list ap, t_conversion *c)
 	return (ft_lltoa_base(foo, 10));
 }
 
-char	*uint_conversion(va_list ap, t_conversion *c)
+char	*uint_conversion(const t_conversion *c, va_list ap)
 {
 	unsigned int foo;
 
@@ -50,7 +50,7 @@ char	*uint_conversion(va_list ap, t_conversion *c)
 	return (ft_lltoa_base(foo, 10));
 }
 
-char	*ulong_conversion(va_list ap, t_conversion *c)
+char	*ulong_conversion(const t_conversion *c, va_list ap)
 {
 	unsigned long foo;
 

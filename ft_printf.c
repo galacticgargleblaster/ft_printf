@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 11:24:50 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 11:59:31 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,32 @@
 #include "ft_printf.h"
 #include "conversion.h"
 
-
 void	do_conversion(va_list ap, t_token *token)
 {
 	t_conversion	*c;
+	char			*str;
 
-	if ((c = token->conv))
-	{
-		token->str = c->func(ap, c);
-		delete_conversion(c);
-		token->conv = NULL;
-	}
+	c = token->conv;
+	str = c->func(c, ap);
+	delete_conversion(c);
+	token->conv = NULL;
+	token->str = str;
 }
 
 /*
-**	unmarshal the memory from va_list, and apply the conversion functions
-**	necessary to expand it into a string.
+**	Iterates over the token list, converting tokens in need of conversion
 */
 
-void	apply_conversions(va_list ap, t_doubly_linked_list *token_list)
+void	do_conversions(va_list ap, t_doubly_linked_list *token_list)
 {
 	t_token					*token;
 	size_t idx;
 
 	idx = token_list->size - 1;
-	while ((token = list_get_index(token_list, idx)))
+	while ((token = list_get_index(token_list, idx--)))
 	{
-		do_conversion(ap, token);
-		idx--;
+		if (token->conv)
+			do_conversion(ap, token);
 	}
 }
 
@@ -53,7 +51,7 @@ int	ft_va_list_printf(char *str, size_t size, const char *format, va_list args)
 	char *tmp;
 
 	token_list = tokenize(format);
-	apply_conversions(args, token_list);
+	do_conversions(args, token_list);
 	tmp = join_token_strings(token_list);
 	delete_doubly_linked_list(token_list, &delete_token);
 	ft_strncpy(str, tmp, size);

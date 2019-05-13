@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 11:23:55 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 12:00:17 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 typedef struct	s_conversion
 {
 	char					*spec;
-	char					*(*func)();
+	char					*(*func)(const struct s_conversion *c, va_list ap);
 	int						arg_number;
 	int						min_field_width;
 	int						precision;
@@ -60,13 +60,16 @@ typedef struct	s_conversion
 
 # define IS_STR_CONV(conv) (ft_endswith(conv->spec, 's'))
 
-void	*func_for_conv(char	conv);
-void	*func_for_flag(char	flag);
-char	*char_conversion(va_list ap, t_conversion *c);
-char	*str_conversion(va_list ap, t_conversion *c);
-char	*int_conversion(va_list ap, t_conversion *c);
-char	*uint_conversion(va_list ap, t_conversion *c);
-char	*hex_conversion(va_list ap, t_conversion *c);
+void	*func_for_conv(const char conv);
+void	*func_for_flag(const char flag);
+
+char	*char_conversion(const t_conversion *c, va_list ap);
+char	*str_conversion(const t_conversion *c, va_list ap);
+char	*int_conversion(const t_conversion *c, va_list ap);
+char	*uint_conversion(const t_conversion *c, va_list ap);
+char	*hex_conversion(const t_conversion *c, va_list ap);
+
+char	*expand_field_width(const t_conversion *c, char *str);
 
 t_conversion	*new_conversion(const char *format);
 void			delete_conversion(t_conversion *conv);
