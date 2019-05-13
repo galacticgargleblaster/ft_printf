@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 13:38:54 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 14:16:49 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,60 @@
 #include <stdarg.h>
 #include "conversion.h"
 
-char	*handle_sign(const t_conversion *c, const int arg, char *str)
+char	*handle_everything(const t_conversion *c, const int arg, char *str)
 {
-	char	*tmp;
+	if (c->precision >= 0 && ft_strlen(str) < (size_t)c->precision)
+		str = pad_with_char(c->precision, PAD_LEFT, '0', str);
+	
 
-	if (arg < 0)
+	// Handle field width
+	char	pad_char;
+
+	pad_char = (c->flags & FLAG_ZERO_PADDING) ? '0' : ' ';
+	if (c->min_field_width >= 0)
 	{
-		tmp = ft_strjoin("-", str);
-		free(str);
-		str = tmp;
+		if (c->flags & FLAG_NEGATIVE_FIELD_WIDTH)
+			str = pad_with_char(c->min_field_width, PAD_RIGHT, pad_char, str);
+		else
+			str = pad_with_char(c->min_field_width, PAD_LEFT, pad_char, str);
+		if (arg < 0)
+			str[0] = '-';
+		else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN)
+			str[0] = '+';
 	}
-	else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN && arg >= 0)
+	else
 	{
-		tmp = ft_strjoin("+", str);
-		free(str);
-		str = tmp;
+		char	*tmp;
+
+		if (arg < 0)
+		{
+			tmp = ft_strjoin("-", str);
+			free(str);
+			str = tmp;
+		}
+		else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN && arg >= 0)
+		{
+			tmp = ft_strjoin("+", str);
+			free(str);
+			str = tmp;
+		}
 	}
+	
+	
+	
 	return (str);
 }
 
-char	*handle_precision(const t_conversion *c, const int arg, char *str)
+char	*strip_leading_negative_sign(char *str)
 {
-	(void) arg;
-	if (c->precision >= 0 && ft_strlen(str) < (size_t)c->precision)
-		str = pad_with_char(c->precision, PAD_LEFT, '0', str);
+	char	*tmp;
+
+	if (ft_strchr(str, '-'))
+	{
+		tmp = str;
+		str = ft_strdup(str + 1);
+		free(tmp);
+	}
 	return (str);
 }
 
@@ -45,19 +75,11 @@ char	*int_conversion(const t_conversion *c, va_list ap)
 {
 	int		arg;
 	char	*str;
-	char	*tmp;
 
 	arg = va_arg(ap, int);
 	str = ft_itoa(arg);
-	if (ft_strchr(str, '-'))
-	{
-		tmp = str;
-		str = ft_strdup(str + 1);
-		free(tmp);
-	}
-	str = handle_precision(c, arg, str);
-	str = handle_sign(c, arg, str);
-	str = expand_field_width(c, str);
+	str = strip_leading_negative_sign(str);
+	str = handle_everything(c, arg, str);
 	return (str);
 }
 
