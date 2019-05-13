@@ -34,6 +34,8 @@ void compare_and_print_result(char *str_a, char *str_b)
 
 int main()
 {
+	COMPARE("%-7d", 33);
+	COMPARE("%4d", 94827);
 	COMPARE("%7d", 33);
 	COMPARE("%+d", 5);
 	COMPARE("%%u 0000042 == |%u|", 0000042);

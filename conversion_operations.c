@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 12:10:59 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 12:13:48 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ char	*expand_field_width(const t_conversion *c, char *str)
 		{
 			tmp = ft_strnew(len);
 			ft_memset(tmp, ' ', len);
-			tmp = ft_strjoin(tmp, str);
+			if (c->flags & FLAG_NEGATIVE_FIELD_WIDTH)
+				tmp = ft_strjoin(str, tmp);
+			else
+				tmp = ft_strjoin(tmp, str);
 			free(str);
 			str = tmp;
 		}
