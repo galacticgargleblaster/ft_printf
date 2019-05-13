@@ -6,31 +6,48 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 10:31:42 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 11:24:21 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 #include <ft_printf.h>
 #include "assert.h"
+#include "conversion.h"
 
-void 	*char_conversion(va_list ap)
+char	*char_conversion(va_list ap, t_conversion *c)
 {
 	int		tmp;
 	char	*str;
 
+	(void)c;
 	tmp = va_arg(ap, int);
 	str = ft_strndup((char *)(&tmp), 1);
 	return (str);
 }
 
-void	*str_conversion(va_list ap)
+char	*str_conversion(va_list ap, t_conversion *c)
 {
-	return ft_strdup(va_arg(ap, char *));
+	char	*str;
+	char	*tmp;
+	ssize_t	len;
+
+	str = ft_strdup(va_arg(ap, char *));
+	if (c->min_field_width >= 0)
+	{
+		len = c->min_field_width - ft_strlen(str);
+		tmp = ft_strnew(len);
+		ft_memset(tmp, ' ', len);
+		tmp = ft_strjoin(tmp, str);
+		free(str);
+		str = tmp;
+	}
+	return str;
 }
 
-void	*hex_conversion(va_list ap)
+char	*hex_conversion(va_list ap, t_conversion *c)
 {
 	(void)ap;
+	(void)c;
 	return 0;
 }

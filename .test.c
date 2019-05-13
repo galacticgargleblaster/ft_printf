@@ -34,10 +34,14 @@ void compare_and_print_result(char *str_a, char *str_b)
 
 int main()
 {
-	COMPARE("%%u 0000042 == |%u|\n", 0000042);
+	COMPARE("%7d", 33);
+	COMPARE("%+d", 5);
+	COMPARE("%%u 0000042 == |%u|", 0000042);
+	COMPARE("%%u \t == |%u|", '\t');
+	COMPARE("%%u Lydie == |%u|", 'L'+'y'+'d'+'i'+'e');
 	int n = 50;
 	COMPARE("foo %d, %d, %d", n, 200, -10);
-	COMPARE("%u\n", 2000);
+	COMPARE("%u", 2000);
 	COMPARE("%s\t%s", "before", "after");
 	COMPARE("Hello, %s.", "ftpf")
 	COMPARE("%c", 37);

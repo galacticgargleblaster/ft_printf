@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 22:32:17 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 11:24:50 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,10 @@
 void	do_conversion(va_list ap, t_token *token)
 {
 	t_conversion	*c;
-	char			*tmp;
-	ssize_t			len;
 
 	if ((c = token->conv))
 	{
-		token->str = c->func(ap);
-		if (IS_STR_CONV(c))
-		{
-			if (c->min_field_width >= 0)
-			{
-				len = c->min_field_width - ft_strlen(token->str);
-				tmp = ft_strnew(len);
-				ft_memset(tmp, ' ', len);
-				tmp = ft_strjoin(tmp, token->str);
-				free(token->str);
-				token->str = tmp;
-			}
-		}
+		token->str = c->func(ap, c);
 		delete_conversion(c);
 		token->conv = NULL;
 	}
