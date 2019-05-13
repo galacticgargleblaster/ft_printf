@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 12:48:24 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 13:38:54 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,21 @@
 #include <stdarg.h>
 #include "conversion.h"
 
-char	*always_include_sign(const t_conversion *c, const int arg, char *str)
+char	*handle_sign(const t_conversion *c, const int arg, char *str)
 {
 	char	*tmp;
 
-	if (arg >= 0 && c->flags & FLAG_ALWAYS_INCLUDE_SIGN)
+	if (arg < 0)
 	{
-		tmp = str;
-		str = ft_strjoin("+", str);
-		free(tmp);
+		tmp = ft_strjoin("-", str);
+		free(str);
+		str = tmp;
+	}
+	else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN && arg >= 0)
+	{
+		tmp = ft_strjoin("+", str);
+		free(str);
+		str = tmp;
 	}
 	return (str);
 }
@@ -39,11 +45,18 @@ char	*int_conversion(const t_conversion *c, va_list ap)
 {
 	int		arg;
 	char	*str;
+	char	*tmp;
 
 	arg = va_arg(ap, int);
 	str = ft_itoa(arg);
-	str = always_include_sign(c, arg, str);
+	if (ft_strchr(str, '-'))
+	{
+		tmp = str;
+		str = ft_strdup(str + 1);
+		free(tmp);
+	}
 	str = handle_precision(c, arg, str);
+	str = handle_sign(c, arg, str);
 	str = expand_field_width(c, str);
 	return (str);
 }

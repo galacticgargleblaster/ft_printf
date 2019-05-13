@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 12:48:56 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 13:36:44 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,21 @@
 char	*pad_with_char(const int width, const int padding_direction, const char c, char *str)
 {
 	char	*tmp;
+	char	*padding;
 	ssize_t	len;
 
 	len = width - ft_strlen(str);
 	if (len > 0)
 	{
-		tmp = ft_strnew(len);
-		ft_memset(tmp, c, len);
+		padding = ft_strnew(len);
+		ft_memset(padding, c, len);
 		if (padding_direction == PAD_RIGHT)
-			tmp = ft_strjoin(str, tmp);
+			tmp = ft_strjoin(str, padding);
 		else if (padding_direction == PAD_LEFT)
-			tmp = ft_strjoin(tmp, str);
+			tmp = ft_strjoin(padding, str);
 		else
 			ASSERT(0);
+		free(padding);
 		free(str);
 		str = tmp;
 	}
