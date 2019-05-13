@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 13:36:44 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 13:45:52 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,15 @@ char	*pad_with_char(const int width, const int padding_direction, const char c, 
 
 char	*expand_field_width(const t_conversion *c, char *str)
 {
+	char	pad_char;
+
+	pad_char = (c->flags & FLAG_ZERO_PADDING) ? '0' : ' ';
 	if (c->min_field_width >= 0)
 	{
 		if (c->flags & FLAG_NEGATIVE_FIELD_WIDTH)
-			str = pad_with_char(c->min_field_width, PAD_RIGHT, ' ', str);
+			str = pad_with_char(c->min_field_width, PAD_RIGHT, pad_char, str);
 		else
-			str = pad_with_char(c->min_field_width, PAD_LEFT, ' ', str);
+			str = pad_with_char(c->min_field_width, PAD_LEFT, pad_char, str);
 	}
 	return str;
 }
