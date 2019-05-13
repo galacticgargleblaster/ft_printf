@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 20:11:09 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 10:31:42 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,10 @@ void 	*char_conversion(va_list ap)
 void	*str_conversion(va_list ap)
 {
 	return ft_strdup(va_arg(ap, char *));
+}
+
+void	*hex_conversion(va_list ap)
+{
+	(void)ap;
+	return 0;
 }

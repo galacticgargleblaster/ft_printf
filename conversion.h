@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 22:21:25 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 10:31:16 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	*char_conversion(va_list ap);
 void	*str_conversion(va_list ap);
 void	*int_conversion(va_list ap);
 void	*uint_conversion(va_list ap);
+void	*hex_conversion(va_list ap);
 
 t_conversion	*new_conversion(const char *format);
 void			delete_conversion(t_conversion *conv);

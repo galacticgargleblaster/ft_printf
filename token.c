@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 01:19:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 21:45:52 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 11:00:17 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,24 @@ size_t	store_conversion(t_token *token, const char *format)
 **	Stores a plain string -- no conversion necessary
 */
 
-size_t	store_string(t_token *token, const char *format)
+#define NO_ESCAPE 0
+#define ESCAPE_DOUBLE_PCT 1
+
+size_t	store_string(t_token *token, const char *format, int escape)
 {
 	size_t	len;
 
-	len = length_of_str_to_next_spec_char_or_null(format);
-	token->str = ft_strndup(format, len);
+	if (escape)
+	{
+		len = 1 + length_of_str_to_next_spec_char_or_null(format + 2);
+		token->str = ft_strndup(format + 1, len);
+		len += 1;
+	}
+	else
+	{
+		len = length_of_str_to_next_spec_char_or_null(format);
+		token->str = ft_strndup(format, len);
+	}
 	return (len);
 }
 
@@ -70,12 +82,9 @@ t_doubly_linked_list	*tokenize(const char *format)
 		if (*format == SPEC_CHR && *(format + 1) && *(format + 1) != SPEC_CHR)
 			len = store_conversion(token, format);
 		else if (*format == SPEC_CHR && *(format + 1) && *(format + 1) == SPEC_CHR)
-		{
-			format++;
-			len = 1 + store_string(token, format);
-		}
+			len = store_string(token, format, ESCAPE_DOUBLE_PCT);
 		else
-			len = store_string(token, format);
+			len = store_string(token, format, NO_ESCAPE);
 		list_push_tail(token_list, token);
 		format += len;
 	}

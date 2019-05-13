@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/11 22:02:58 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 10:23:19 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ void	*func_for_conv(char	conv)
 		return (&char_conversion);
 	else if (conv == 's')
 		return (&str_conversion);
-	else if (conv == 'd')
+	else if (conv == 'd' || conv == 'i')
 		return (&int_conversion);
-	else if (conv == 'u')
+	else if (conv == 'o' || conv == 'u')
 		return (&uint_conversion);
+	else if (conv == 'x' || conv == 'X')
+		return (&hex_conversion);
 	else
 		ASSERT(0);
 	return (NULL);
