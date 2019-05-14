@@ -45,6 +45,9 @@ static long     l_pos_1 = 22337203685477;
 
 int main()
 {
+	COMPARE("%5.0d", 0);
+	COMPARE("%.d", 0);
+	COMPARE("%.0d", 0);
 	COMPARE("this % d number", 17)
 	COMPARE("%037ld", 22337203685477);
 	COMPARE("%hhi", -129);

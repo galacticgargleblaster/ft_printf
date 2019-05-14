@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 20:55:58 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 21:45:50 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,8 +127,16 @@ size_t			parse_conversion(const char *format, t_conversion *conv)
 		store_flag(format[len++], conv);
 	if (IS_DIGIT(format[len]))
 		len += store_digits(format + len, &conv->min_field_width);
-	if (format[len] == '.' && (IS_DIGIT(format[len + 1])))
-		len += 1 + store_digits(format + len + 1, &conv->precision);
+	if (format[len] == '.')
+	{
+		if  (IS_DIGIT(format[len + 1]))
+			len += 1 + store_digits(format + len + 1, &conv->precision);
+		else
+		{
+			conv->precision = 0;
+			len++;
+		}
+	}
 	len += store_length_modifier(&format[len], conv);
 	conv->func = function_for_conversion(conv, format[len++]);
 	conv->spec = ft_strndup(format, len);

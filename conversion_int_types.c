@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 21:30:06 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 21:48:04 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,13 @@ char	*handle_everything(const t_conversion *c, const int sign, char *str)
 {
 	char	pad_char;
 
-	if (c->precision >= 0 && ft_strlen(str) < (size_t)c->precision)
+	if (c->precision > 0 && ft_strlen(str) < (size_t)c->precision)
 		str = pad_with_char(c->precision, PAD_LEFT, '0', str);
+	else if (c->precision == 0)
+	{
+		free (str);
+		str = ft_strnew(0);
+	}
 
 	if (c->min_field_width >= 0)
 	{
