@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 21:48:04 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 22:01:29 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,15 @@ char	*prepend_sign(const t_conversion *c, const int sign, char *str)
 {
 	char	*tmp;
 
+	tmp = NULL;
 	if (sign < 0)
-	{
 		tmp = ft_strjoin("-", str);
-		free(str);
-		str = tmp;
-	}
-	else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN && sign >= 0)
-	{
+	else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN)
 		tmp = ft_strjoin("+", str);
-		free(str);
-		str = tmp;
-	}
 	else if ((c->flags & FLAG_SPACE_BEFORE) && is_signed_conversion(c))
-	{
 		tmp = ft_strjoin(" ", str);
+	if (tmp)
+	{
 		free(str);
 		str = tmp;
 	}
@@ -62,10 +56,13 @@ int		is_signed_conversion(const t_conversion *c)
 	return (0);
 }
 
-char	*handle_everything(const t_conversion *c, const int sign, char *str)
+int		field_width_was_specified(const t_conversion *c)
 {
-	char	pad_char;
+	return (c->min_field_width >= 0);
+}
 
+char	*apply_precision(const t_conversion *c, char *str)
+{
 	if (c->precision > 0 && ft_strlen(str) < (size_t)c->precision)
 		str = pad_with_char(c->precision, PAD_LEFT, '0', str);
 	else if (c->precision == 0)
@@ -73,8 +70,15 @@ char	*handle_everything(const t_conversion *c, const int sign, char *str)
 		free (str);
 		str = ft_strnew(0);
 	}
+	return (str);
+}
 
-	if (c->min_field_width >= 0)
+char	*handle_everything(const t_conversion *c, const int sign, char *str)
+{
+	char	pad_char;
+
+	str = apply_precision(c, str);
+	if (field_width_was_specified(c))
 	{
 		if (should_zero_pad(c))
 			pad_char = '0';
