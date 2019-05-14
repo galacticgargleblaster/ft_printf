@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 14:16:49 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 20:08:31 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,47 +14,71 @@
 #include <stdarg.h>
 #include "conversion.h"
 
+char	*prepend_sign(const t_conversion *c, const int arg, char *str)
+{
+	char	*tmp;
+
+	if (arg < 0)
+	{
+		tmp = ft_strjoin("-", str);
+		free(str);
+		str = tmp;
+	}
+	else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN && arg >= 0)
+	{
+		tmp = ft_strjoin("+", str);
+		free(str);
+		str = tmp;
+	}
+	return (str);
+}
+
+/*
+**	If a precision is given with a numeric conversion (d, i, o, u, i, x, and X), the 0 flag is ignored.
+*/
+
+int		should_zero_pad(const t_conversion *c)
+{
+	return ((c->flags & FLAG_ZERO_PADDING) && c->precision < 0);
+}
+
 char	*handle_everything(const t_conversion *c, const int arg, char *str)
 {
-	if (c->precision >= 0 && ft_strlen(str) < (size_t)c->precision)
-		str = pad_with_char(c->precision, PAD_LEFT, '0', str);
-	
-
-	// Handle field width
 	char	pad_char;
 
-	pad_char = (c->flags & FLAG_ZERO_PADDING) ? '0' : ' ';
+	if (c->precision >= 0 && ft_strlen(str) < (size_t)c->precision)
+		str = pad_with_char(c->precision, PAD_LEFT, '0', str);
+
 	if (c->min_field_width >= 0)
 	{
+		if (should_zero_pad(c))
+			pad_char = '0';
+		else
+		{
+			pad_char = ' ';
+			str = prepend_sign(c, arg, str);
+		}
 		if (c->flags & FLAG_NEGATIVE_FIELD_WIDTH)
 			str = pad_with_char(c->min_field_width, PAD_RIGHT, pad_char, str);
 		else
 			str = pad_with_char(c->min_field_width, PAD_LEFT, pad_char, str);
-		if (arg < 0)
-			str[0] = '-';
-		else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN)
-			str[0] = '+';
+		if (should_zero_pad(c))
+		{
+			if (str[0] != '0')
+				str = prepend_sign(c, arg, str);
+			else
+			{
+				if (arg < 0)
+					str[0] = '-';
+				else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN)
+					str[0] = '+';
+			}
+		}
 	}
 	else
 	{
-		char	*tmp;
-
-		if (arg < 0)
-		{
-			tmp = ft_strjoin("-", str);
-			free(str);
-			str = tmp;
-		}
-		else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN && arg >= 0)
-		{
-			tmp = ft_strjoin("+", str);
-			free(str);
-			str = tmp;
-		}
+		str = prepend_sign(c, arg, str);
 	}
-	
-	
-	
 	return (str);
 }
 

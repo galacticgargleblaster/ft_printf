@@ -34,6 +34,9 @@ void compare_and_print_result(char *str_a, char *str_b)
 
 int main()
 {
+	COMPARE("%08.5d", 34);
+	COMPARE("%04d", -4825);
+	COMPARE("%7d", -14);
 	COMPARE("%07d", -54);
 	COMPARE("%05d", 43);
 	COMPARE("%.6d", -3);
