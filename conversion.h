@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 20:30:03 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 21:22:29 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 
 # define SPEC_CHR '%'
 
-# define ALL_CONVERSION_CHRS "cspdiouxX"
+# define SIGNED_CONVERSION_CHRS "di"
+# define ALL_CONVERSION_CHRS ("cspouxX" SIGNED_CONVERSION_CHRS)
 # define ALL_FLAG_CHRS "#0- +"
 # define FLAG_ALTERNATE_FORM		(1 << 0)
 # define FLAG_ZERO_PADDING			(1 << 1)

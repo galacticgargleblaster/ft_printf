@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 21:14:35 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 21:30:06 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,12 @@ char	*prepend_sign(const t_conversion *c, const int sign, char *str)
 		free(str);
 		str = tmp;
 	}
+	else if ((c->flags & FLAG_SPACE_BEFORE) && is_signed_conversion(c))
+	{
+		tmp = ft_strjoin(" ", str);
+		free(str);
+		str = tmp;
+	}
 	return (str);
 }
 
@@ -40,6 +46,20 @@ char	*prepend_sign(const t_conversion *c, const int sign, char *str)
 int		should_zero_pad(const t_conversion *c)
 {
 	return ((c->flags & FLAG_ZERO_PADDING) && c->precision < 0);
+}
+
+int		is_signed_conversion(const t_conversion *c)
+{
+	int	i;
+
+	i = 0;
+	while (SIGNED_CONVERSION_CHRS[i])
+	{
+		if (ft_strchr(c->spec, SIGNED_CONVERSION_CHRS[i]))
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 char	*handle_everything(const t_conversion *c, const int sign, char *str)
@@ -72,6 +92,8 @@ char	*handle_everything(const t_conversion *c, const int sign, char *str)
 					str[0] = '-';
 				else if (c->flags & FLAG_ALWAYS_INCLUDE_SIGN)
 					str[0] = '+';
+				else if ((c->flags & FLAG_SPACE_BEFORE) && is_signed_conversion(c))
+					str[0] = ' ';
 			}
 		}
 	}
@@ -104,7 +126,6 @@ char	*signed_char_conversion(const t_conversion *c, va_list ap)
 	(void)c;
 	arg = (signed char)va_arg(ap, int);
 	str = ft_itoa(arg);
-	
 	str = strip_leading_negative_sign(str);
 	str = handle_everything(c, (arg >= 0 ? 0 : -1), str);
 	return (str);
