@@ -6,7 +6,7 @@
 #    By: student <student@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/01 10:18:11 by nkirkby           #+#    #+#              #
-#    Updated: 2019/04/10 20:45:05 by student          ###   ########.fr        #
+#    Updated: 2019/05/13 20:55:27 by student          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,6 +64,8 @@ recursive_fclean: fclean
 
 re: clean all
 
+# some tests from ftfc cause compiler warnings.  Don't let these get promoted to errors when building tests.
+test: CFLAGS := $(filter-out -Werror,$(CFLAGS))
 test: fclean
 	$(MAKE) CFLAGS="$(CFLAGS) -g" all
 	$(CC) $(CFLAGS) -g $(LINKER_FLAGS) -lftprintf -L. .test.c -o test

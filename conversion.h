@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 02:00:07 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 12:58:53 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 20:30:03 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,18 @@ typedef struct	s_conversion
 void	*func_for_conv(const char conv);
 void	*func_for_flag(const char flag);
 
+char	*generic_conversion(const t_conversion *c, va_list ap);
+
 char	*char_conversion(const t_conversion *c, va_list ap);
 char	*str_conversion(const t_conversion *c, va_list ap);
+char	*signed_char_conversion(const t_conversion *c, va_list ap);
+char	*short_conversion(const t_conversion *c, va_list ap);
 char	*int_conversion(const t_conversion *c, va_list ap);
+char	*long_conversion(const t_conversion *c, va_list ap);
+char	*unsigned_char_conversion(const t_conversion *c, va_list ap);
+char	*ushort_conversion(const t_conversion *c, va_list ap);
 char	*uint_conversion(const t_conversion *c, va_list ap);
+char	*ulong_conversion(const t_conversion *c, va_list ap);
 char	*hex_conversion(const t_conversion *c, va_list ap);
 
 char	*expand_field_width(const t_conversion *c, char *str);

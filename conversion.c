@@ -6,7 +6,7 @@
 /*   By: student <student@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/10 01:41:05 by student           #+#    #+#             */
-/*   Updated: 2019/05/13 12:42:59 by student          ###   ########.fr       */
+/*   Updated: 2019/05/13 20:55:58 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,41 @@
 
 /*
 **	returns the conversion function corresponding to the provided
-**	character
+**	character and modifier characters
 */
 
-void	*func_for_conv(char	conv)
+void	*function_for_conversion(const t_conversion *c, const char conv)
 {
 	if (conv == 'c')
 		return (&char_conversion);
 	else if (conv == 's')
 		return (&str_conversion);
 	else if (conv == 'd' || conv == 'i')
-		return (&int_conversion);
+	{
+		if (c->length_modifier == LENGTH_MODIFIER_l)
+			return (&long_conversion);
+		else if (c->length_modifier == LENGTH_MODIFIER_ll)
+			return (&long_conversion);
+		else if (c->length_modifier == LENGTH_MODIFIER_h)
+			return (&short_conversion);
+		else if (c->length_modifier == LENGTH_MODIFIER_hh)
+			return (&signed_char_conversion);
+		else
+			return (&int_conversion);
+	}
 	else if (conv == 'o' || conv == 'u')
-		return (&uint_conversion);
+	{
+		if (c->length_modifier == LENGTH_MODIFIER_l)
+			return (&ulong_conversion);
+		else if (c->length_modifier == LENGTH_MODIFIER_ll)
+			return (&ulong_conversion);
+		else if (c->length_modifier == LENGTH_MODIFIER_h)
+			return (&ushort_conversion);
+		else if (c->length_modifier == LENGTH_MODIFIER_hh)
+			return (&unsigned_char_conversion);
+		else
+			return (&uint_conversion);
+	}
 	else if (conv == 'x' || conv == 'X')
 		return (&hex_conversion);
 	else
@@ -108,7 +130,7 @@ size_t			parse_conversion(const char *format, t_conversion *conv)
 	if (format[len] == '.' && (IS_DIGIT(format[len + 1])))
 		len += 1 + store_digits(format + len + 1, &conv->precision);
 	len += store_length_modifier(&format[len], conv);
-	conv->func = func_for_conv(format[len++]);
+	conv->func = function_for_conversion(conv, format[len++]);
 	conv->spec = ft_strndup(format, len);
 	return len;
 }
